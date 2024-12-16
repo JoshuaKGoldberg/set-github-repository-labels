@@ -76,7 +76,7 @@ import fs from "node:fs/promises";
 
 const labels = (await fs.readFile("labels.json")).toString();
 
-await $`npx set-github-repository --labels ${labels} -- --owner JoshuaKGoldberg --repository "create-typescript-app"`;
+await $`npx set-github-repository --labels ${labels} --owner JoshuaKGoldberg --repository "create-typescript-app"`;
 ```
 
 ## Development
