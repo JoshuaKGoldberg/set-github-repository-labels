@@ -1,6 +1,6 @@
 {
 	"name": "set-github-repository-labels",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "Sets labels for a GitHub repository, including renaming existing similar labels. 🏷️",
 	"repository": {
 		"type": "git",
