@@ -17,14 +17,66 @@
 
 ## Usage
 
+Sets a collection of labels on a repository.
+
+For each outcome label, if its name, the same words excluding its `prefix:`, or any of its aliases already exists, that existing label is updated.
+Otherwise, a new label is created.
+
+### Node.js API
+
 ```shell
 npm i set-github-repository-labels
 ```
 
 ```ts
-import { greet } from "set-github-repository-labels";
+import { setGitHubRepositoryLabels } from "set-github-repository-labels";
 
-greet("Hello, world! 💖");
+await setGitHubRepositoryLabels({
+	labels: [
+		{
+			color: "d73a4a",
+			description: "Something isn't working 🐛",
+			name: "type: bug",
+		},
+		{
+			aliases: ["enhancement"],
+			color: "a2eeef",
+			description: "New enhancement or request 🚀",
+			name: "type: feature",
+		},
+	],
+	owner: "JoshuaKGoldberg",
+	repository: "create-typescript-app",
+});
+```
+
+### Shell
+
+`set-github-repository-labels` can be run as an `npx` command.
+
+| Option         | Type     | Default or Required                                 | Description                                                                                            |
+| -------------- | -------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `--auth`       | `string` | `process.env.GH_TOKEN` or executing `gh auth token` | Auth token for GitHub from [`octokit-from-auth`](https://github.com/JoshuaKGoldberg/octokit-from-auth) |
+| `--bandwidth`  | `number` | `6`                                                 | Maximum parallel requests to start at once                                                             |
+| `--labels`     | `string` | _(required)_                                        | Raw JSON string                                                                                        |
+| `--owner`      | `string` | _(required)_                                        | Owning organization or username for the repository                                                     |
+| `--repository` | `string` | _(required)_                                        | Title of the repository                                                                                |
+
+Because `labels` takes in data as a raw JSON string, so you'll most likely want to pipe data to it from a JSON source:
+
+```shell
+npx set-github-repository --labels "$(cat labels.json)" --owner JoshuaKGoldberg --repository "create-typescript-app"
+```
+
+To call it programmatically, you can use with something like [`execa`](https://www.npmjs.com/package/execa):
+
+```ts
+import $ from "execa";
+import fs from "node:fs/promises";
+
+const labels = (await fs.readFile("labels.json")).toString();
+
+await $`npx set-github-repository --labels ${labels} -- --owner JoshuaKGoldberg --repository "create-typescript-app"`;
 ```
 
 ## Development

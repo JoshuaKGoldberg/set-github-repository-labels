@@ -40,6 +40,11 @@ export default tseslint.config(
 			},
 		},
 		rules: {
+			"n/no-unsupported-features/node-builtins": [
+				"error",
+				{ allowExperimental: true },
+			],
+
 			// Stylistic concerns that don't interfere with Prettier
 			"logical-assignment-operators": [
 				"error",
@@ -58,7 +63,7 @@ export default tseslint.config(
 		rules: {
 			"n/no-missing-import": [
 				"error",
-				{ allowModules: ["set-github-repository-labels"] },
+				{ allowModules: ["execa", "set-github-repository-labels"] },
 			],
 		},
 	},
