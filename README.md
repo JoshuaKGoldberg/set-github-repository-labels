@@ -65,7 +65,7 @@ await setGitHubRepositoryLabels({
 Because `labels` takes in data as a raw JSON string, so you'll most likely want to pipe data to it from a JSON source:
 
 ```shell
-npx set-github-repository --labels "$(cat labels.json)" --owner JoshuaKGoldberg --repository "create-typescript-app"
+npx set-github-repository-labels --labels "$(cat labels.json)" --owner JoshuaKGoldberg --repository "create-typescript-app"
 ```
 
 To call it programmatically, you can use with something like [`execa`](https://www.npmjs.com/package/execa):
@@ -76,7 +76,7 @@ import fs from "node:fs/promises";
 
 const labels = (await fs.readFile("labels.json")).toString();
 
-await $`npx set-github-repository --labels ${labels} --owner JoshuaKGoldberg --repository "create-typescript-app"`;
+await $`npx set-github-repository-labels --labels ${labels} --owner JoshuaKGoldberg --repository "create-typescript-app"`;
 ```
 
 ## Development
