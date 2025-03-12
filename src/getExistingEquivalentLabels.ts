@@ -1,8 +1,8 @@
-import { OutcomeLabel } from "./options.js";
+import { OutcomeLabel } from "./types.js";
 
 export interface GitHubLabelData {
-	color: string;
-	description: null | string;
+	color?: null | string;
+	description?: null | string;
 	name: string;
 }
 

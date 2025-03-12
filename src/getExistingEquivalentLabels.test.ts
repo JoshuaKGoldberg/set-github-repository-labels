@@ -4,7 +4,7 @@ import {
 	getExistingEquivalentLabels,
 	GitHubLabelData,
 } from "./getExistingEquivalentLabels.js";
-import { OutcomeLabel } from "./options.js";
+import { OutcomeLabel } from "./types.js";
 
 const createGitHubLabelData = (overrides: Partial<GitHubLabelData>) => ({
 	color: "#000000",
