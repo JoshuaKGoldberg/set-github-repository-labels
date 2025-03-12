@@ -133,7 +133,7 @@ Because `labels` takes in data as a raw JSON string, so you'll most likely want 
 npx set-github-repository-labels --labels "$(cat labels.json)" --owner JoshuaKGoldberg --repository "create-typescript-app"
 ```
 
-To call it programmatically, you can use with something like [`execa`](https://www.npmjs.com/package/execa):
+To call it programmatically, you can use something like [`execa`](https://www.npmjs.com/package/execa):
 
 ```ts
 import $ from "execa";
