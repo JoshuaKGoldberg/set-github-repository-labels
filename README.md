@@ -28,6 +28,71 @@ Otherwise, a new label is created.
 npm i set-github-repository-labels
 ```
 
+`set-github-repository-labels` provides two functions:
+
+- [`determineLabelChanges`](#determinelabelchanges): describes the changes a repository's labels would need to get to the outcome labels
+- [`setGitHubRepositoryLabels`](#setgithubrepositorylabels): sends the API requests to the repository to set its labels
+
+## `determineLabelChanges`
+
+Takes two required parameters:
+
+1. `existingLabels`: an array of the labels that currently exist on a repository
+2. `outcomeLabels`: an array of the labels that you want to exist on the repository
+
+Returns an array of change objects describing the network requests that would be needed to change the repository's existing labels to the outcome labels.
+
+For example, determine label changes on an existing repository with only one label to having two:
+
+```ts
+import { determineLabelChanges } from "set-github-repository-labels";
+
+const changes = determineLabelChanges(
+	[{ color: "ff0000", description: "Something isn't working.", name: "bug" }],
+	[
+		{
+			color: "d73a4a",
+			description: "Something isn't working 🐛",
+			name: "type: bug",
+		},
+		{
+			aliases: ["enhancement"],
+			color: "a2eeef",
+			description: "New enhancement or request 🚀",
+			name: "type: feature",
+		},
+	],
+);
+
+for (const change of changes) {
+	switch (change.type) {
+		case "delete":
+			console.log(`DELETE: ${change.name}`);
+			break;
+		case "patch":
+			console.log(`PATCH: ${change.originalName} to ${change.newName}`);
+			break;
+		case "post":
+			console.log(`POST: ${change.name}`);
+			break;
+	}
+}
+```
+
+See `src/types.ts` for the specific properties that exist on the change objects.
+
+## `setGitHubRepositoryLabels`
+
+Takes a parameters object with the following properties corresponding to [Shell options](#shell):
+
+- `auth` _(optional)_: Auth token to create a new GitHub Octokit
+- `bandwidth` _(optional)_: How many requests to send at once
+- `labels` _(required)_: Outcome labels to end with on the repository
+- `owner` _(required)_: Organization or user the repository is owned by
+- `repository` _(required)_: Name of the repository
+
+It returns a Promise for sending requests to the GitHub API to update the repository's labels.
+
 ```ts
 import { setGitHubRepositoryLabels } from "set-github-repository-labels";
 
