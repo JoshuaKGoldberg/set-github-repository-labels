@@ -1,3 +1,9 @@
+# [0.2.0](https://github.com/JoshuaKGoldberg/set-github-repository-labels/compare/0.1.0...0.2.0) (2025-03-12)
+
+### Features
+
+- extract and export determineLabelChanges function ([ff720a7](https://github.com/JoshuaKGoldberg/set-github-repository-labels/commit/ff720a741d61832489b0a7d5817633b425a42834))
+
 # 0.1.0 (2024-12-16)
 
 ### Features
