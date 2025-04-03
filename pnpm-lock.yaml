@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       octokit-from-auth:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.0
+        version: 0.3.1
       throttled-queue:
         specifier: ^2.1.4
         version: 2.1.4
