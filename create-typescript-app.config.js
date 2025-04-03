@@ -14,7 +14,10 @@ export default createConfig({
 				rules: [
 					{
 						entries: {
-							"n/no-unsupported-features/node-builtins": "off",
+							"n/no-unsupported-features/node-builtins": [
+								"error",
+								{ allowExperimental: true },
+							],
 						},
 					},
 				],
