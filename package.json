@@ -37,7 +37,7 @@
 		"*": "prettier --ignore-unknown --write"
 	},
 	"dependencies": {
-		"octokit-from-auth": "^0.2.0",
+		"octokit-from-auth": "^0.3.0",
 		"throttled-queue": "^2.1.4",
 		"zod": "^3.24.1"
 	},
