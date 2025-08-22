@@ -15,8 +15,8 @@ importers:
         specifier: ^2.1.4
         version: 2.1.4
       zod:
-        specifier: ^3.24.1
-        version: 3.24.2
+        specifier: ^4.0.0
+        version: 4.0.17
     devDependencies:
       '@eslint-community/eslint-plugin-eslint-comments':
         specifier: 4.5.0
@@ -4221,6 +4221,9 @@ packages:
 
   zod@3.24.2:
     resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
+
+  zod@4.0.17:
+    resolution: {integrity: sha512-1PHjlYRevNxxdy2JZ8JcNAw7rX8V9P1AKkP+x/xZfxB0K5FYfuV+Ug6P/6NVSR2jHQ+FzDDoDHS04nYUsOIyLQ==}
 
 snapshots:
 
@@ -8619,10 +8622,12 @@ snapshots:
 
   zod-tsconfig@0.2.0:
     dependencies:
-      zod: 3.24.2
+      zod: 4.0.17
 
   zod-validation-error@3.4.0(zod@3.24.2):
     dependencies:
       zod: 3.24.2
 
   zod@3.24.2: {}
+
+  zod@4.0.17: {}
