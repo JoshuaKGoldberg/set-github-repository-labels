@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.3](https://github.com/JoshuaKGoldberg/set-github-repository-labels/compare/0.2.2...0.2.3) (2026-09-20)
+
+### Bug Fixes
+
+- update zod to v4 ([#358](https://github.com/JoshuaKGoldberg/set-github-repository-labels/issues/358)) ([77b6433](https://github.com/JoshuaKGoldberg/set-github-repository-labels/commit/77b6433186e3f8d9e13e4c5d4000fff9d911677a)), closes [#357](https://github.com/JoshuaKGoldberg/set-github-repository-labels/issues/357)
+
 ## [0.2.2](https://github.com/JoshuaKGoldberg/set-github-repository-labels/compare/0.2.1...0.2.2) (2025-04-03)
 
 ### Bug Fixes
