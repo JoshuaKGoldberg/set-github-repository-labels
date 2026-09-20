@@ -30,37 +30,34 @@ describe("migrateRepositoryLabels", () => {
 		}).rejects.toMatchInlineSnapshot(`
 			[ZodError: [
 			  {
-			    "code": "invalid_type",
 			    "expected": "string",
-			    "received": "undefined",
+			    "code": "invalid_type",
 			    "path": [
 			      "labels",
 			      0,
 			      "color"
 			    ],
-			    "message": "Required"
+			    "message": "Invalid input: expected string, received undefined"
 			  },
 			  {
-			    "code": "invalid_type",
 			    "expected": "string",
-			    "received": "undefined",
+			    "code": "invalid_type",
 			    "path": [
 			      "labels",
 			      0,
 			      "description"
 			    ],
-			    "message": "Required"
+			    "message": "Invalid input: expected string, received undefined"
 			  },
 			  {
-			    "code": "invalid_type",
 			    "expected": "string",
-			    "received": "undefined",
+			    "code": "invalid_type",
 			    "path": [
 			      "labels",
 			      0,
 			      "name"
 			    ],
-			    "message": "Required"
+			    "message": "Invalid input: expected string, received undefined"
 			  }
 			]]
 		`);
