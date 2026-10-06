@@ -1,44 +1,51 @@
-import { parseArgs } from "node:util";
+import { type CliRunSettings, createCli } from "parse-standard-args";
 import { z } from "zod";
 
 import { zLabel } from "./options.js";
 import { setGitHubRepositoryLabels } from "./setGitHubRepositoryLabels.js";
 
-const schema = z.object({
-	auth: z.string().optional(),
-	labels: z.array(zLabel),
-	owner: z.string(),
-	repository: z.string(),
+const options = z.object({
+	auth: z.string().optional().meta({
+		defaultDescription: "process.env.GH_TOKEN or executing gh auth token",
+		description: "Auth token for GitHub",
+	}),
+	labels: z
+		.array(zLabel)
+		.describe("Outcome labels to end with on the repository, as a JSON array"),
+	owner: z
+		.string()
+		.describe("Owning organization or username for the repository"),
+	repository: z.string().describe("Title of the repository"),
 });
 
-export async function cli(args: string[]) {
-	const { values } = parseArgs({
-		args,
-		options: {
-			auth: {
-				type: "string",
-			},
-			labels: {
-				type: "string",
-			},
-			owner: {
-				type: "string",
-			},
-			repository: {
-				type: "string",
-			},
-		},
-		strict: true,
-	});
+const program = createCli({
+	description:
+		"Sets labels for a GitHub repository, including renaming existing similar labels. 🏷️",
+	examples: [
+		`set-github-repository-labels --labels "$(cat labels.json)" --owner JoshuaKGoldberg --repository create-typescript-app`,
+	],
+	name: "set-github-repository-labels",
+	options,
+});
 
-	if (!values.labels) {
-		throw new Error("Missing required arg: --labels");
+export async function cli(
+	args: string[],
+	{
+		error = console.error.bind(console),
+		log = console.log.bind(console),
+	}: CliRunSettings = {},
+) {
+	const parsed = await program.run(args, { error, log });
+	if (!parsed) {
+		return;
 	}
 
-	const settings = schema.parse({
-		...values,
-		labels: JSON.parse(values.labels ?? "") as unknown,
-	});
-
-	await setGitHubRepositoryLabels(settings);
+	try {
+		await setGitHubRepositoryLabels(parsed.values);
+	} catch (caught) {
+		error(
+			`Error: ${caught instanceof Error ? caught.message : String(caught)}`,
+		);
+		process.exitCode = 1;
+	}
 }
