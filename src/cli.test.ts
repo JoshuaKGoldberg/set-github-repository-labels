@@ -37,10 +37,6 @@ function getPrinted(mock: typeof console.error) {
 	return printed;
 }
 
-async function run(args: string[]) {
-	await cli(args);
-}
-
 describe("cli", () => {
 	beforeEach(() => {
 		vi.spyOn(console, "error").mockImplementation(() => undefined);
@@ -52,7 +48,7 @@ describe("cli", () => {
 	});
 
 	it("passes parsed settings to setGitHubRepositoryLabels when args are valid", async () => {
-		await run(validArgs);
+		await cli(validArgs);
 
 		expect(mockSetGitHubRepositoryLabels.mock.calls).toMatchInlineSnapshot(`
 			[
@@ -76,7 +72,7 @@ describe("cli", () => {
 	});
 
 	it("passes auth to setGitHubRepositoryLabels when provided", async () => {
-		await run([...validArgs, "--auth", "abc123"]);
+		await cli([...validArgs, "--auth", "abc123"]);
 
 		expect(mockSetGitHubRepositoryLabels).toHaveBeenCalledWith({
 			auth: "abc123",
@@ -89,7 +85,7 @@ describe("cli", () => {
 	it("concatenates labels when --labels is provided multiple times", async () => {
 		const other = { color: "ffffff", description: "jkl", name: "other" };
 
-		await run([...validArgs, "--labels", JSON.stringify([other])]);
+		await cli([...validArgs, "--labels", JSON.stringify([other])]);
 
 		expect(mockSetGitHubRepositoryLabels).toHaveBeenCalledWith({
 			labels: [label, other],
@@ -99,7 +95,7 @@ describe("cli", () => {
 	});
 
 	it("reports missing required flags without calling setGitHubRepositoryLabels", async () => {
-		await run([]);
+		await cli([]);
 
 		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
 			"--labels is required.
@@ -112,7 +108,7 @@ describe("cli", () => {
 	});
 
 	it("reports a missing --labels when only it is missing", async () => {
-		await run(["--owner", "TestOwner", "--repository", "TestRepository"]);
+		await cli(["--owner", "TestOwner", "--repository", "TestRepository"]);
 
 		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
 			"--labels is required.
@@ -123,7 +119,7 @@ describe("cli", () => {
 	});
 
 	it("reports invalid JSON in --labels", async () => {
-		await run([
+		await cli([
 			"--owner",
 			"TestOwner",
 			"--repository",
@@ -141,7 +137,7 @@ describe("cli", () => {
 	});
 
 	it("reports invalid label data in --labels", async () => {
-		await run([
+		await cli([
 			"--owner",
 			"TestOwner",
 			"--repository",
@@ -161,7 +157,7 @@ describe("cli", () => {
 	});
 
 	it("reports unknown flags", async () => {
-		await run([...validArgs, "--owners", "TestOwner"]);
+		await cli([...validArgs, "--owners", "TestOwner"]);
 
 		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
 			"Unknown flag: --owners (did you mean --owner?)
@@ -176,7 +172,7 @@ describe("cli", () => {
 			new Error("Bad credentials"),
 		);
 
-		await run(validArgs);
+		await cli(validArgs);
 
 		expect(getPrinted(console.error)).toMatchInlineSnapshot(
 			`"Error: Bad credentials"`,
@@ -187,7 +183,7 @@ describe("cli", () => {
 	it("reports a stringified value when setGitHubRepositoryLabels rejects with a non-error", async () => {
 		mockSetGitHubRepositoryLabels.mockRejectedValueOnce("Bad credentials");
 
-		await run(validArgs);
+		await cli(validArgs);
 
 		expect(getPrinted(console.error)).toMatchInlineSnapshot(
 			`"Error: Bad credentials"`,
@@ -196,7 +192,7 @@ describe("cli", () => {
 	});
 
 	it("prints help text with --help", async () => {
-		await run(["--help"]);
+		await cli(["--help"]);
 
 		expect(getPrinted(console.log)).toMatchInlineSnapshot(`
 			"Usage: set-github-repository-labels [options]
