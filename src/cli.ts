@@ -14,8 +14,12 @@ const options = z.object({
 		.describe("Outcome labels to end with on the repository, as a JSON array"),
 	owner: z
 		.string()
-		.describe("Owning organization or username for the repository"),
-	repository: z.string().describe("Title of the repository"),
+		.describe("Owning organization or username for the repository")
+		.meta({ placeholder: "owner" }),
+	repository: z
+		.string()
+		.describe("Title of the repository")
+		.meta({ placeholder: "repository" }),
 });
 
 const settings = {

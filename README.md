@@ -125,7 +125,6 @@ await setGitHubRepositoryLabels({
 | Option         | Type     | Default or Required                                 | Description                                                                                            |
 | -------------- | -------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `--auth`       | `string` | `process.env.GH_TOKEN` or executing `gh auth token` | Auth token for GitHub from [`octokit-from-auth`](https://github.com/JoshuaKGoldberg/octokit-from-auth) |
-| `--bandwidth`  | `number` | `6`                                                 | Maximum parallel requests to start at once                                                             |
 | `--labels`     | `string` | _(required)_                                        | Raw JSON string                                                                                        |
 | `--owner`      | `string` | _(required)_                                        | Owning organization or username for the repository                                                     |
 | `--repository` | `string` | _(required)_                                        | Title of the repository                                                                                |

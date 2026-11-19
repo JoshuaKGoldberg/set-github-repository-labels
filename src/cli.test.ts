@@ -204,11 +204,11 @@ describe("cli", () => {
 			Sets labels for a GitHub repository, including renaming existing similar labels. 🏷️
 
 			Options:
-			      --auth <string>        Auth token for GitHub (default: process.env.GH_TOKEN or executing gh auth token)
-			      --labels <json>        Outcome labels to end with on the repository, as a JSON array (required, repeatable)
-			      --owner <string>       Owning organization or username for the repository (required)
-			      --repository <string>  Title of the repository (required)
-			  -h, --help                 Show this help message
+			      --auth <string>            Auth token for GitHub (default: process.env.GH_TOKEN or executing gh auth token)
+			      --labels <json>            Outcome labels to end with on the repository, as a JSON array (required, repeatable)
+			      --owner <owner>            Owning organization or username for the repository (required)
+			      --repository <repository>  Title of the repository (required)
+			  -h, --help                     Show this help message
 
 			Examples:
 			  set-github-repository-labels --labels "$(cat labels.json)" --owner JoshuaKGoldberg --repository create-typescript-app"
