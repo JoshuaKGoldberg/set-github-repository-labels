@@ -184,6 +184,17 @@ describe("cli", () => {
 		expect(process.exitCode).toBe(1);
 	});
 
+	it("reports a stringified value when setGitHubRepositoryLabels rejects with a non-error", async () => {
+		mockSetGitHubRepositoryLabels.mockRejectedValueOnce("Bad credentials");
+
+		await run(validArgs);
+
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(
+			`"Error: Bad credentials"`,
+		);
+		expect(process.exitCode).toBe(1);
+	});
+
 	it("prints help text with --help", async () => {
 		await run(["--help"]);
 
