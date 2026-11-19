@@ -1,4 +1,4 @@
-import { type CliRunSettings, createCli } from "parse-standard-args";
+import { parseStandardArgv } from "parse-standard-args";
 import { z } from "zod";
 
 import { zLabel } from "./options.js";
@@ -18,7 +18,7 @@ const options = z.object({
 	repository: z.string().describe("Title of the repository"),
 });
 
-const program = createCli({
+const settings = {
 	description:
 		"Sets labels for a GitHub repository, including renaming existing similar labels. 🏷️",
 	examples: [
@@ -26,24 +26,26 @@ const program = createCli({
 	],
 	name: "set-github-repository-labels",
 	options,
-});
+};
 
-export async function cli(
-	args: string[],
-	{
-		error = console.error.bind(console),
-		log = console.log.bind(console),
-	}: CliRunSettings = {},
-) {
-	const parsed = await program.run(args, { error, log });
-	if (!parsed) {
+export async function cli(args: string[]) {
+	const parsed = parseStandardArgv(args, settings);
+
+	if (parsed.type === "error") {
+		console.error(parsed.text);
+		process.exitCode = 1;
+		return;
+	}
+
+	if (parsed.type !== "values") {
+		console.log(parsed.text);
 		return;
 	}
 
 	try {
 		await setGitHubRepositoryLabels(parsed.values);
 	} catch (caught) {
-		error(
+		console.error(
 			`Error: ${caught instanceof Error ? caught.message : String(caught)}`,
 		);
 		process.exitCode = 1;

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { cli } from "./cli.js";
 
@@ -25,18 +25,28 @@ const validArgs = [
 	JSON.stringify([label]),
 ];
 
-const error = vi.fn();
-const log = vi.fn();
+function getPrinted(mock: typeof console.error) {
+	const printed = vi
+		.mocked(mock)
+		.mock.calls.map((call) => call.join(" "))
+		.join("\n");
 
-function getPrinted(mock: typeof error) {
-	return mock.mock.calls.map((call) => call.join(" ")).join("\n");
+	// console-fail-test fails on any call that isn't cleared
+	vi.mocked(mock).mockClear();
+
+	return printed;
 }
 
 async function run(args: string[]) {
-	await cli(args, { error, log });
+	await cli(args);
 }
 
 describe("cli", () => {
+	beforeEach(() => {
+		vi.spyOn(console, "error").mockImplementation(() => undefined);
+		vi.spyOn(console, "log").mockImplementation(() => undefined);
+	});
+
 	afterEach(() => {
 		process.exitCode = undefined;
 	});
@@ -61,7 +71,7 @@ describe("cli", () => {
 			  ],
 			]
 		`);
-		expect(error).not.toHaveBeenCalled();
+		expect(console.error).not.toHaveBeenCalled();
 		expect(process.exitCode).toBeUndefined();
 	});
 
@@ -91,7 +101,7 @@ describe("cli", () => {
 	it("reports missing required flags without calling setGitHubRepositoryLabels", async () => {
 		await run([]);
 
-		expect(getPrinted(error)).toMatchInlineSnapshot(`
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
 			"--labels is required.
 			--owner is required.
 			--repository is required.
@@ -104,7 +114,7 @@ describe("cli", () => {
 	it("reports a missing --labels when only it is missing", async () => {
 		await run(["--owner", "TestOwner", "--repository", "TestRepository"]);
 
-		expect(getPrinted(error)).toMatchInlineSnapshot(`
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
 			"--labels is required.
 			Run 'set-github-repository-labels --help' for usage."
 		`);
@@ -122,7 +132,7 @@ describe("cli", () => {
 			"[{invalid",
 		]);
 
-		expect(getPrinted(error)).toMatchInlineSnapshot(`
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
 			"--labels: Expected valid JSON, received "[{invalid".
 			Run 'set-github-repository-labels --help' for usage."
 		`);
@@ -140,7 +150,7 @@ describe("cli", () => {
 			JSON.stringify([{ invalid: true }]),
 		]);
 
-		expect(getPrinted(error)).toMatchInlineSnapshot(`
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
 			"--labels[0].color: Invalid input: expected string, received undefined
 			--labels[0].description: Invalid input: expected string, received undefined
 			--labels[0].name: Invalid input: expected string, received undefined
@@ -153,7 +163,7 @@ describe("cli", () => {
 	it("reports unknown flags", async () => {
 		await run([...validArgs, "--owners", "TestOwner"]);
 
-		expect(getPrinted(error)).toMatchInlineSnapshot(`
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
 			"Unknown flag: --owners (did you mean --owner?)
 			Run 'set-github-repository-labels --help' for usage."
 		`);
@@ -168,14 +178,16 @@ describe("cli", () => {
 
 		await run(validArgs);
 
-		expect(getPrinted(error)).toMatchInlineSnapshot(`"Error: Bad credentials"`);
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(
+			`"Error: Bad credentials"`,
+		);
 		expect(process.exitCode).toBe(1);
 	});
 
 	it("prints help text with --help", async () => {
 		await run(["--help"]);
 
-		expect(getPrinted(log)).toMatchInlineSnapshot(`
+		expect(getPrinted(console.log)).toMatchInlineSnapshot(`
 			"Usage: set-github-repository-labels [options]
 
 			Sets labels for a GitHub repository, including renaming existing similar labels. 🏷️

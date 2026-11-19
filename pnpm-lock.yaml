@@ -12,8 +12,8 @@ importers:
         specifier: ^0.3.0
         version: 0.3.2
       parse-standard-args:
-        specifier: link:../parse-standard-args
-        version: link:../parse-standard-args
+        specifier: ^0.3.0
+        version: 0.3.0
       throttled-queue:
         specifier: ^2.1.4
         version: 2.1.4
@@ -2374,7 +2374,6 @@ packages:
   eslint-plugin-markdown@5.1.0:
     resolution: {integrity: sha512-SJeyKko1K6GwI0AN6xeCDToXDkfKZfXcexA6B+O2Wr2btUS9GrC+YgwSyVli5DJnctUHjFXcQ2cqTaAmVoLi2A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    deprecated: Please use @eslint/markdown instead
     peerDependencies:
       eslint: '>=8'
 
@@ -3532,6 +3531,15 @@ packages:
 
   parse-path@7.1.0:
     resolution: {integrity: sha512-EuCycjZtfPcjWk7KTksnJ5xPMvWGA/6i4zrLYhRG0hGvC3GPU/jGUj3Cy+ZR0v30duV3e23R95T1lE2+lsndSw==}
+
+  parse-standard-args@0.3.0:
+    resolution: {integrity: sha512-SH663jox6V7vxSZgroZJw9DgvSbcNHWOnjHjgvsPyj0/+OIbFraNJyDQbA+ATaAUIi0OGAmV27bIGUgcAEM41g==}
+    engines: {node: '>=18.7.0'}
+    peerDependencies:
+      '@clack/prompts': '>=0.11'
+    peerDependenciesMeta:
+      '@clack/prompts':
+        optional: true
 
   parse-statements@1.0.11:
     resolution: {integrity: sha512-HlsyYdMBnbPQ9Jr/VgJ1YF4scnldvJpJxCVx6KgqPL4dxppsWrJHCIIxQXMJrqGnsRkNPATbeMJ8Yxu7JMsYcA==}
@@ -7902,6 +7910,10 @@ snapshots:
   parse-path@7.1.0:
     dependencies:
       protocols: 2.0.2
+
+  parse-standard-args@0.3.0:
+    dependencies:
+      '@standard-schema/spec': 1.1.0
 
   parse-statements@1.0.11: {}
 
