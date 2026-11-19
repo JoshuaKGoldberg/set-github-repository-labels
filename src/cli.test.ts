@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { cli } from "./cli.js";
 
@@ -10,74 +10,45 @@ vi.mock("./setGitHubRepositoryLabels", () => ({
 	},
 }));
 
-describe("migrateRepositoryLabels", () => {
-	it("throws an error when args have no labels data", async () => {
-		await expect(async () => {
-			await cli(["--owner", "TestOwner", "--repository", "TestRepository"]);
-		}).rejects.toMatchInlineSnapshot(`[Error: Missing required arg: --labels]`);
+const label = {
+	color: "000000",
+	description: "def ghi",
+	name: "area: abc",
+};
+
+const validArgs = [
+	"--owner",
+	"TestOwner",
+	"--repository",
+	"TestRepository",
+	"--labels",
+	JSON.stringify([label]),
+];
+
+function getPrinted(mock: typeof console.error) {
+	const printed = vi
+		.mocked(mock)
+		.mock.calls.map((call) => call.join(" "))
+		.join("\n");
+
+	vi.mocked(mock).mockClear();
+
+	return printed;
+}
+
+describe("cli", () => {
+	beforeEach(() => {
+		vi.spyOn(console, "error").mockImplementation(() => undefined);
+		vi.spyOn(console, "log").mockImplementation(() => undefined);
 	});
 
-	it("throws an error when args have invalid labels data", async () => {
-		await expect(async () => {
-			await cli([
-				"--owner",
-				"TestOwner",
-				"--repository",
-				"TestRepository",
-				"--labels",
-				JSON.stringify([{ invalid: true }]),
-			]);
-		}).rejects.toMatchInlineSnapshot(`
-			[ZodError: [
-			  {
-			    "expected": "string",
-			    "code": "invalid_type",
-			    "path": [
-			      "labels",
-			      0,
-			      "color"
-			    ],
-			    "message": "Invalid input: expected string, received undefined"
-			  },
-			  {
-			    "expected": "string",
-			    "code": "invalid_type",
-			    "path": [
-			      "labels",
-			      0,
-			      "description"
-			    ],
-			    "message": "Invalid input: expected string, received undefined"
-			  },
-			  {
-			    "expected": "string",
-			    "code": "invalid_type",
-			    "path": [
-			      "labels",
-			      0,
-			      "name"
-			    ],
-			    "message": "Invalid input: expected string, received undefined"
-			  }
-			]]
-		`);
+	afterEach(() => {
+		process.exitCode = undefined;
 	});
 
 	it("passes parsed settings to setGitHubRepositoryLabels when args are valid", async () => {
-		await cli([
-			"--owner",
-			"TestOwner",
-			"--repository",
-			"TestRepository",
-			"--labels",
-			JSON.stringify([
-				{
-					color: "000000",
-					description: "def ghi",
-					name: "area: abc",
-				},
-			]),
-		]);
+		await cli(validArgs);
+
 		expect(mockSetGitHubRepositoryLabels.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
@@ -95,5 +66,149 @@ describe("migrateRepositoryLabels", () => {
 			  ],
 			]
 		`);
+		expect(console.error).not.toHaveBeenCalled();
+		expect(process.exitCode).toBeUndefined();
+	});
+
+	it("passes auth to setGitHubRepositoryLabels when provided", async () => {
+		await cli([...validArgs, "--auth", "abc123"]);
+
+		expect(mockSetGitHubRepositoryLabels).toHaveBeenCalledWith({
+			auth: "abc123",
+			labels: [label],
+			owner: "TestOwner",
+			repository: "TestRepository",
+		});
+	});
+
+	it("concatenates labels when --labels is provided multiple times", async () => {
+		const other = { color: "ffffff", description: "jkl", name: "other" };
+
+		await cli([...validArgs, "--labels", JSON.stringify([other])]);
+
+		expect(mockSetGitHubRepositoryLabels).toHaveBeenCalledWith({
+			labels: [label, other],
+			owner: "TestOwner",
+			repository: "TestRepository",
+		});
+	});
+
+	it("reports missing required flags without calling setGitHubRepositoryLabels", async () => {
+		await cli([]);
+
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
+			"--labels is required.
+			--owner is required.
+			--repository is required.
+			Run 'set-github-repository-labels --help' for usage."
+		`);
+		expect(mockSetGitHubRepositoryLabels).not.toHaveBeenCalled();
+		expect(process.exitCode).toBe(1);
+	});
+
+	it("reports a missing --labels when only it is missing", async () => {
+		await cli(["--owner", "TestOwner", "--repository", "TestRepository"]);
+
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
+			"--labels is required.
+			Run 'set-github-repository-labels --help' for usage."
+		`);
+		expect(mockSetGitHubRepositoryLabels).not.toHaveBeenCalled();
+		expect(process.exitCode).toBe(1);
+	});
+
+	it("reports invalid JSON in --labels", async () => {
+		await cli([
+			"--owner",
+			"TestOwner",
+			"--repository",
+			"TestRepository",
+			"--labels",
+			"[{invalid",
+		]);
+
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
+			"--labels: Expected valid JSON, received "[{invalid".
+			Run 'set-github-repository-labels --help' for usage."
+		`);
+		expect(mockSetGitHubRepositoryLabels).not.toHaveBeenCalled();
+		expect(process.exitCode).toBe(1);
+	});
+
+	it("reports invalid label data in --labels", async () => {
+		await cli([
+			"--owner",
+			"TestOwner",
+			"--repository",
+			"TestRepository",
+			"--labels",
+			JSON.stringify([{ invalid: true }]),
+		]);
+
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
+			"--labels[0].color: Invalid input: expected string, received undefined
+			--labels[0].description: Invalid input: expected string, received undefined
+			--labels[0].name: Invalid input: expected string, received undefined
+			Run 'set-github-repository-labels --help' for usage."
+		`);
+		expect(mockSetGitHubRepositoryLabels).not.toHaveBeenCalled();
+		expect(process.exitCode).toBe(1);
+	});
+
+	it("reports unknown flags", async () => {
+		await cli([...validArgs, "--owners", "TestOwner"]);
+
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(`
+			"Unknown flag: --owners (did you mean --owner?)
+			Run 'set-github-repository-labels --help' for usage."
+		`);
+		expect(mockSetGitHubRepositoryLabels).not.toHaveBeenCalled();
+		expect(process.exitCode).toBe(1);
+	});
+
+	it("reports an error message when setGitHubRepositoryLabels rejects", async () => {
+		mockSetGitHubRepositoryLabels.mockRejectedValueOnce(
+			new Error("Bad credentials"),
+		);
+
+		await cli(validArgs);
+
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(
+			`"Error: Bad credentials"`,
+		);
+		expect(process.exitCode).toBe(1);
+	});
+
+	it("reports a stringified value when setGitHubRepositoryLabels rejects with a non-error", async () => {
+		mockSetGitHubRepositoryLabels.mockRejectedValueOnce("Bad credentials");
+
+		await cli(validArgs);
+
+		expect(getPrinted(console.error)).toMatchInlineSnapshot(
+			`"Error: Bad credentials"`,
+		);
+		expect(process.exitCode).toBe(1);
+	});
+
+	it("prints help text with --help", async () => {
+		await cli(["--help"]);
+
+		expect(getPrinted(console.log)).toMatchInlineSnapshot(`
+			"Usage: set-github-repository-labels [options]
+
+			Sets labels for a GitHub repository, including renaming existing similar labels. 🏷️
+
+			Options:
+			      --auth <string>            Auth token for GitHub (default: process.env.GH_TOKEN or executing gh auth token)
+			      --labels <json>            Outcome labels to end with on the repository, as a JSON array (required, repeatable)
+			      --owner <owner>            Owning organization or username for the repository (required)
+			      --repository <repository>  Title of the repository (required)
+			  -h, --help                     Show this help message
+
+			Examples:
+			  set-github-repository-labels --labels "$(cat labels.json)" --owner JoshuaKGoldberg --repository create-typescript-app"
+		`);
+		expect(mockSetGitHubRepositoryLabels).not.toHaveBeenCalled();
+		expect(process.exitCode).toBeUndefined();
 	});
 });
