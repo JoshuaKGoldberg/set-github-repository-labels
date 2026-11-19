@@ -31,7 +31,6 @@ function getPrinted(mock: typeof console.error) {
 		.mock.calls.map((call) => call.join(" "))
 		.join("\n");
 
-	// console-fail-test fails on any call that isn't cleared
 	vi.mocked(mock).mockClear();
 
 	return printed;
