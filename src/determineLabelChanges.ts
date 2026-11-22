@@ -1,5 +1,5 @@
-import { getExistingEquivalentLabels } from "./getExistingEquivalentLabels.js";
-import { OutcomeLabel } from "./types.js";
+import { getExistingEquivalentLabels } from "./getExistingEquivalentLabels.ts";
+import { OutcomeLabel } from "./types.ts";
 
 export interface ExistingLabel {
 	color?: null | string;
@@ -8,9 +8,7 @@ export interface ExistingLabel {
 }
 
 export type LabelChange =
-	| LabelChangeDelete
-	| LabelChangePatch
-	| LabelChangePost;
+	LabelChangeDelete | LabelChangePatch | LabelChangePost;
 
 export interface LabelChangeDelete {
 	name: string;

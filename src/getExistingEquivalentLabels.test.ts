@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
 	getExistingEquivalentLabels,
 	GitHubLabelData,
-} from "./getExistingEquivalentLabels.js";
-import { OutcomeLabel } from "./types.js";
+} from "./getExistingEquivalentLabels.ts";
+import { OutcomeLabel } from "./types.ts";
 
 const createGitHubLabelData = (overrides: Partial<GitHubLabelData>) => ({
 	color: "#000000",
@@ -20,7 +20,7 @@ const createOutcomeLabel = (overrides: Partial<OutcomeLabel>) => ({
 	...overrides,
 });
 
-describe("getExistingEquivalentLabels", () => {
+describe(getExistingEquivalentLabels, () => {
 	it("returns no labels when there are no existing labels", () => {
 		const actual = getExistingEquivalentLabels([], { name: "abc" });
 

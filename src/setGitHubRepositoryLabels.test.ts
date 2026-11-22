@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { setGitHubRepositoryLabels } from "./setGitHubRepositoryLabels.js";
+import { setGitHubRepositoryLabels } from "./setGitHubRepositoryLabels.ts";
 
 const mockRequest = vi.fn();
 

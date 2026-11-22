@@ -1,4 +1,4 @@
-import { OutcomeLabel } from "./types.js";
+import { OutcomeLabel } from "./types.ts";
 
 export interface GitHubLabelData {
 	color?: null | string;
@@ -13,7 +13,7 @@ export function getExistingEquivalentLabels(
 	const outcomeTrimmed = outcomeLabel.name.replace(/\w+: (\w+)/, "$1");
 
 	return existingLabels.filter(({ name: existingName }) => {
-		return !!(
+		return (
 			(existingName === outcomeLabel.name ||
 				existingName === outcomeTrimmed ||
 				outcomeLabel.aliases?.includes(existingName)) ??

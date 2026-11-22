@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { determineLabelChanges } from "./determineLabelChanges.js";
+import { determineLabelChanges } from "./determineLabelChanges.ts";
 
 const mockOutcomeLabel = {
 	color: "000000",

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { zLabel } from "./options.js";
+import { zLabel } from "./options.ts";
 
 export interface GitHubRepositoryLabelsSettings {
 	auth?: string;
