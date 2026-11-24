@@ -1,8 +1,8 @@
 import { parseArgs } from "node:util";
 import { z } from "zod";
 
-import { zLabel } from "./options.js";
-import { setGitHubRepositoryLabels } from "./setGitHubRepositoryLabels.js";
+import { zLabel } from "./options.ts";
+import { setGitHubRepositoryLabels } from "./setGitHubRepositoryLabels.ts";
 
 const schema = z.object({
 	auth: z.string().optional(),

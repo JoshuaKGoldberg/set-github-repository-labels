@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { cli } from "./cli.js";
+import { cli } from "./cli.ts";
 
 const mockSetGitHubRepositoryLabels = vi.fn();
 
@@ -12,22 +12,22 @@ vi.mock("./setGitHubRepositoryLabels", () => ({
 
 describe("migrateRepositoryLabels", () => {
 	it("throws an error when args have no labels data", async () => {
-		await expect(async () => {
-			await cli(["--owner", "TestOwner", "--repository", "TestRepository"]);
-		}).rejects.toMatchInlineSnapshot(`[Error: Missing required arg: --labels]`);
+		await expect(
+			cli(["--owner", "TestOwner", "--repository", "TestRepository"]),
+		).rejects.toMatchInlineSnapshot(`[Error: Missing required arg: --labels]`);
 	});
 
 	it("throws an error when args have invalid labels data", async () => {
-		await expect(async () => {
-			await cli([
+		await expect(
+			cli([
 				"--owner",
 				"TestOwner",
 				"--repository",
 				"TestRepository",
 				"--labels",
 				JSON.stringify([{ invalid: true }]),
-			]);
-		}).rejects.toMatchInlineSnapshot(`
+			]),
+		).rejects.toMatchInlineSnapshot(`
 			[ZodError: [
 			  {
 			    "expected": "string",

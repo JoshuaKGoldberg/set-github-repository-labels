@@ -1,9 +1,9 @@
 import { octokitFromAuth } from "octokit-from-auth";
 import throttledQueue from "throttled-queue";
 
-import { determineLabelChanges } from "./determineLabelChanges.js";
-import { defaultOptions } from "./options.js";
-import { GitHubRepositoryLabelsSettings } from "./types.js";
+import { determineLabelChanges } from "./determineLabelChanges.ts";
+import { defaultOptions } from "./options.ts";
+import { GitHubRepositoryLabelsSettings } from "./types.ts";
 
 // https://github.com/shaunpersad/throttled-queue/issues/21
 type ThrottledQueue = (typeof import("throttled-queue"))["default"];

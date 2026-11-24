@@ -2,19 +2,26 @@
 	"dictionaries": ["npm", "node", "typescript"],
 	"ignorePaths": [
 		".all-contributorsrc",
-		".github",
+		"/_tmp_*",
 		"CHANGELOG.md",
 		"coverage",
-		"lib",
+		"dist",
 		"node_modules",
 		"pnpm-lock.yaml"
 	],
 	"words": [
+		"JoshuaKGoldberg",
+		"MatteoGabriele",
 		"a2eeef",
+		"agentscan",
 		"apexskier",
 		"automerge",
-		"joshuakgoldberg",
-		"markdownlintignore",
-		"tseslint"
+		"mshick",
+		"octoguide",
+		"peakoss",
+		"stefanzweifel",
+		"tseslint",
+		"zizmor",
+		"zizmorcore"
 	]
 }
