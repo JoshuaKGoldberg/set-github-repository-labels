@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.4](https://github.com/JoshuaKGoldberg/set-github-repository-labels/compare/0.2.3...0.2.4) (2026-11-24)
+
+### Bug Fixes
+
+- bump to create-typescript-app@2.87.18 ([#370](https://github.com/JoshuaKGoldberg/set-github-repository-labels/issues/370)) ([c20f520](https://github.com/JoshuaKGoldberg/set-github-repository-labels/commit/c20f520242603d4b9d23ae8981b2f5bef3317c4a)), closes [#369](https://github.com/JoshuaKGoldberg/set-github-repository-labels/issues/369)
+
 ## [0.2.3](https://github.com/JoshuaKGoldberg/set-github-repository-labels/compare/0.2.2...0.2.3) (2026-09-20)
 
 ### Bug Fixes
